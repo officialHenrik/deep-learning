@@ -77,7 +77,7 @@ def test_get_batches(get_batches):
         test_seq_length = 5
         test_int_text = list(range(1000*test_seq_length))
         batches = get_batches(test_int_text, test_batch_size, test_seq_length)
-
+        
         # Check type
         assert isinstance(batches, np.ndarray),\
             'Batches is not a Numpy array'
@@ -87,10 +87,12 @@ def test_get_batches(get_batches):
             'Batches returned wrong shape.  Found {}'.format(batches.shape)
 
         for x in range(batches.shape[2]):
-            assert np.array_equal(batches[0,0,x], np.array(range(x * 35, x * 35 + batches.shape[3]))),\
-                'Batches returned wrong contents. For example, input sequence {} in the first batch was {}'.format(x, batches[0,0,x])
-            assert np.array_equal(batches[0,1,x], np.array(range(x * 35 + 1, x * 35 + 1 + batches.shape[3]))),\
-                'Batches returned wrong contents. For example, target sequence {} in the first batch was {}'.format(x, batches[0,1,x])
+            expect1 = np.array(range(x * 35, x * 35 + batches.shape[3]))
+            expect2 = np.array(range(x * 35 + 1, x * 35 + 1 + batches.shape[3]))
+            assert np.array_equal(batches[0,0,x], expect1),\
+                'Batches returned wrong contents. For example, input sequence {} in the first batch was {}, expected {}'.format(x, batches[0,0,x], expect1)
+            assert np.array_equal(batches[0,1,x], expect2),\
+                'Batches returned wrong contents. For example, target sequence {} in the first batch was {}, expected {}'.format(x, batches[0,1,x], expect2)
 
 
         last_seq_target = (test_batch_size-1) * 35 + 31
